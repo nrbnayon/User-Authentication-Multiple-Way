@@ -1,9 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 import Root from "../Layout/Root";
 import Home from "../Pages/Home/Home";
-import Blogs from "../Pages/Blogs/Blogs";
-import Bookmarks from "../Pages/Bookmarks/Bookmarks";
-import BlogDetails from "../Components/Blog/BlogDetails";
+import Login from "./../Pages/Auth/Login";
+import SignUp from "./../Pages/Auth/Signup";
 
 const router = createBrowserRouter([
   {
@@ -16,20 +15,12 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/blogs",
-        loader: () => fetch("https://dev.to/api/articles?per_page=20&top=7"),
-        element: <Blogs />,
+        path: "/login",
+        element: <Login />,
       },
       {
-        path: "/blog/:id",
-        element: <BlogDetails />,
-        loader: ({ params }) =>
-          fetch(`https://dev.to/api/articles/${params.id}`),
-      },
-      {
-        path: "/bookmarks",
-        loader: () => fetch("https://dev.to/api/articles?per_page=20&top=7"),
-        element: <Bookmarks />,
+        path: "/signup",
+        element: <SignUp />,
       },
     ],
   },

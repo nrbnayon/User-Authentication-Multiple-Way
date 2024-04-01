@@ -23,7 +23,7 @@ const NavBar = () => {
           to="/"
           className="btn btn-ghost hidden md:flex text-base md:text-2xl text-secondary normal-case  gap-0"
         >
-          Byte<span className="text-primary">Blaze</span>
+          User <span className="text-primary">Authentic</span>
         </Link>
       </div>
       <div className="flex-none">
@@ -40,22 +40,22 @@ const NavBar = () => {
           </li>
           <li>
             <NavLink
-              to="/blogs"
+              to="/login"
               className={({ isActive }) =>
                 isActive ? "text-primary border border-secondary" : "font-bold"
               }
             >
-              Blogs
+              Login
             </NavLink>
           </li>
           <li>
             <NavLink
-              to="/bookmarks"
+              to="/signup"
               className={({ isActive }) =>
                 isActive ? "text-primary border border-secondary" : "font-bold"
               }
             >
-              Bookmarks
+              Sign Up
             </NavLink>
           </li>
         </ul>
