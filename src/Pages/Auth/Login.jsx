@@ -1,9 +1,74 @@
 import { Typography } from "@material-tailwind/react";
+import {
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import auth from "../../Firebase/firebase.config";
+import { useRef, useState } from "react";
+import { FaGithub } from "react-icons/fa";
+import { FaSquareGooglePlus } from "react-icons/fa6";
+import { FaFacebook } from "react-icons/fa";
 
 const Login = () => {
+  const [loginError, setLoginError] = useState(null);
+  const emailRef = useRef(null);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoginError("");
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+
+      if (user.emailVerified) {
+        setLoginError("Login Successful");
+      } else {
+        alert("Verify email before login");
+      }
+    } catch (error) {
+      if (
+        error.code === "auth/wrong-password" ||
+        error.code === "auth/user-not-found"
+      ) {
+        setLoginError("Invalid email or password");
+      } else {
+        setLoginError(error.message);
+      }
+    }
+  };
+  const handleForgetPassword = async () => {
+    const email = emailRef.current.value;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email) {
+      console.log("Email is required");
+      return;
+    } else if (!emailRegex.test(email)) {
+      console.log("Invalid email format");
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      console.log("Password reset email sent successfully");
+    } catch (error) {
+      console.error("Error sending password reset email:", error);
+    }
+  };
   return (
     <div className="hero min-h-screen bg-base-200 my-6 rounded-xl">
+      <Helmet>
+        <title>User Authentication | Login</title>
+      </Helmet>
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
           <h1 className="text-3xl lg:text-5xl font-bold">
@@ -16,13 +81,15 @@ const Login = () => {
           </p>
         </div>
         <div className="card shrink-0 w-full max-w-lg shadow-lg bg-base-100">
-          <form className="card-body">
+          <form onSubmit={handleLogin} className="card-body">
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Email</span>
               </label>
               <input
                 type="email"
+                name="email"
+                ref={emailRef}
                 placeholder="Enter your email"
                 className="input input-bordered"
                 required
@@ -34,15 +101,21 @@ const Login = () => {
               </label>
               <input
                 type="password"
+                name="password"
                 placeholder="Enter your password"
                 className="input input-bordered"
                 required
               />
               <label className="label">
-                <a href="#" className="label-text-alt link link-hover">
+                <a
+                  onClick={handleForgetPassword}
+                  href="#"
+                  className="label-text-alt link link-hover"
+                >
                   Forgot password?
                 </a>
               </label>
+              {loginError && <p>{loginError}</p>}
               <div className="mt-4">
                 <button className="btn btn-primary w-full">Login</button>
               </div>
@@ -60,10 +133,26 @@ const Login = () => {
                 Sign up now
               </Link>
             </Typography>
+            {/* GitHub login button */}
+            <button className="btn btn-primary w-full flex items-center justify-center mt-4">
+              <FaGithub className="mr-2" />
+              Login using GitHub
+            </button>
+            {/* Google login button */}
+            <button className="btn btn-primary w-full flex items-center justify-center mt-4">
+              <FaSquareGooglePlus className="mr-2" />
+              Login using Google
+            </button>
+            {/* Facebook login button */}
+            <button className="btn btn-primary w-full flex items-center justify-center mt-4">
+              <FaFacebook className="mr-2" />
+              Login using Facebook
+            </button>
           </form>
         </div>
       </div>
     </div>
   );
 };
+
 export default Login;

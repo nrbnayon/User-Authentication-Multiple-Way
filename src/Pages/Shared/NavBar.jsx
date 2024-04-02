@@ -17,7 +17,7 @@ const NavBar = () => {
   }, [theme]);
 
   return (
-    <div className="navbar bg-base-100 shadow-lg px-8 md:px-4 fixed z-10">
+    <div className="navbar bg-base-100 shadow-lg px-8 md:px-4 fixed z-10 container mx-auto">
       <div className="flex-1">
         <Link
           to="/"

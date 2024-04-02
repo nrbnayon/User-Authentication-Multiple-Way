@@ -13,9 +13,7 @@ const Banner = () => {
             </span>
           </h1>
           <p className="py-6">
-            Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
-            excepturi exercitationem quasi. In deleniti eaque aut repudiandae et
-            a id nisi.
+            Provident cupiditate voluptatem et in. MY Secret Key is:
           </p>
           <div className="flex gap-2 justify-center">
             <Link to="/login" className="relative inline-block text-lg group">
