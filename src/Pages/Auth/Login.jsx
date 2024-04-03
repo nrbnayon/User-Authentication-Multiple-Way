@@ -2,18 +2,19 @@ import { Typography } from "@material-tailwind/react";
 import {
   GithubAuthProvider,
   sendPasswordResetEmail,
-  signInWithEmailAndPassword,
+  // signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import auth from "../../Firebase/firebase.config";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import { FaSquareGooglePlus } from "react-icons/fa6";
 import { FaFacebook } from "react-icons/fa";
 
 import { GoogleAuthProvider } from "firebase/auth";
+import { AuthContext } from "../../Provider/AuthProvider";
 
 const Login = () => {
   const provider = new GoogleAuthProvider();
@@ -21,6 +22,9 @@ const Login = () => {
   const [googleLoginUser, setGoogleLoginUser] = useState(null);
   const [loginError, setLoginError] = useState(null);
   const emailRef = useRef(null);
+
+  const { signInUser } = useContext(AuthContext);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoginError("");
@@ -28,11 +32,7 @@ const Login = () => {
     const password = e.target.password.value;
 
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCredential = await signInUser(email, password);
       const user = userCredential.user;
 
       if (user.emailVerified) {

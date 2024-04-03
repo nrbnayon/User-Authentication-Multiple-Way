@@ -58,6 +58,16 @@ const NavBar = () => {
               Sign Up
             </NavLink>
           </li>
+          <li>
+            <NavLink
+              to="/register"
+              className={({ isActive }) =>
+                isActive ? "text-primary border border-secondary" : "font-bold"
+              }
+            >
+              Register
+            </NavLink>
+          </li>
         </ul>
 
         <label className="cursor-pointer grid place-items-center">
