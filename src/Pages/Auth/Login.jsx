@@ -1,7 +1,9 @@
 import { Typography } from "@material-tailwind/react";
 import {
+  GithubAuthProvider,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
+  signInWithPopup,
 } from "firebase/auth";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
@@ -11,10 +13,14 @@ import { FaGithub } from "react-icons/fa";
 import { FaSquareGooglePlus } from "react-icons/fa6";
 import { FaFacebook } from "react-icons/fa";
 
+import { GoogleAuthProvider } from "firebase/auth";
+
 const Login = () => {
+  const provider = new GoogleAuthProvider();
+  const githubProvider = new GithubAuthProvider();
+  const [googleLoginUser, setGoogleLoginUser] = useState(null);
   const [loginError, setLoginError] = useState(null);
   const emailRef = useRef(null);
-
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoginError("");
@@ -63,6 +69,31 @@ const Login = () => {
     } catch (error) {
       console.error("Error sending password reset email:", error);
     }
+  };
+
+  const handleGoogleSignIn = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        console.log("SignIn Success", result.user);
+        const newUser = result.user;
+        setGoogleLoginUser(newUser);
+      })
+      .catch((error) => {
+        console.error(error.message);
+      });
+    console.log("Google login");
+  };
+  console.log("google state", googleLoginUser);
+  const handleGithubSignIn = () => {
+    signInWithPopup(auth, githubProvider)
+      .then((result) => {
+        console.log("SignIn github Success", result.user);
+        const newUser = result.user;
+        setGoogleLoginUser(newUser);
+      })
+      .catch((error) => {
+        console.error(error.message);
+      });
   };
   return (
     <div className="hero min-h-screen bg-base-200 my-6 rounded-xl">
@@ -134,12 +165,18 @@ const Login = () => {
               </Link>
             </Typography>
             {/* GitHub login button */}
-            <button className="btn btn-primary w-full flex items-center justify-center mt-4">
+            <button
+              onClick={handleGithubSignIn}
+              className="btn btn-primary w-full flex items-center justify-center mt-4"
+            >
               <FaGithub className="mr-2" />
               Login using GitHub
             </button>
             {/* Google login button */}
-            <button className="btn btn-primary w-full flex items-center justify-center mt-4">
+            <button
+              onClick={handleGoogleSignIn}
+              className="btn btn-primary w-full flex items-center justify-center mt-4"
+            >
               <FaSquareGooglePlus className="mr-2" />
               Login using Google
             </button>

@@ -1,6 +1,11 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../Provider/AuthProvider";
 
 const Banner = () => {
+  const authInfo = useContext(AuthContext);
+  console.log(authInfo);
+
   return (
     <div className="hero z-10">
       <div className="hero-content text-center">
