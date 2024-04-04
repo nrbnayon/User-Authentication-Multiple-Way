@@ -6,37 +6,37 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import auth from "../../Firebase/firebase.config";
 import { useContext, useRef, useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import { FaSquareGooglePlus } from "react-icons/fa6";
 import { FaFacebook } from "react-icons/fa";
 
-import { GoogleAuthProvider } from "firebase/auth";
 import { AuthContext } from "../../Provider/AuthProvider";
 
 const Login = () => {
-  const provider = new GoogleAuthProvider();
   const githubProvider = new GithubAuthProvider();
   const [googleLoginUser, setGoogleLoginUser] = useState(null);
   const [loginError, setLoginError] = useState(null);
   const emailRef = useRef(null);
-
-  const { signInUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const { signInUser, loginWithGoogle } = useContext(AuthContext);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoginError("");
     const email = e.target.email.value;
     const password = e.target.password.value;
-
     try {
       const userCredential = await signInUser(email, password);
       const user = userCredential.user;
 
       if (user.emailVerified) {
+        console.log(user);
         setLoginError("Login Successful");
+        e.target.reset();
+        navigate("/blogs");
       } else {
         alert("Verify email before login");
       }
@@ -72,14 +72,15 @@ const Login = () => {
   };
 
   const handleGoogleSignIn = () => {
-    signInWithPopup(auth, provider)
+    loginWithGoogle()
       .then((result) => {
-        console.log("SignIn Success", result.user);
+        // console.log("SignIn Success", result.user);
         const newUser = result.user;
         setGoogleLoginUser(newUser);
+        navigate("/blogs");
       })
       .catch((error) => {
-        console.error(error.message);
+        setLoginError(error.message);
       });
     console.log("Google login");
   };

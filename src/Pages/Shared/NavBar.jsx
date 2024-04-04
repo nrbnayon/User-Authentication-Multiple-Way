@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { AuthContext } from "../../Provider/AuthProvider";
 
 const NavBar = () => {
   const [theme, setTheme] = useState("light");
@@ -15,6 +16,14 @@ const NavBar = () => {
     const getTheme = localStorage.getItem("theme");
     document.querySelector("html").setAttribute("data-theme", getTheme);
   }, [theme]);
+
+  const { user, logOut } = useContext(AuthContext);
+
+  const handleLogOut = () => {
+    logOut()
+      .then(() => console.log("Logout Successfully"))
+      .catch((error) => console.error(error));
+  };
 
   return (
     <div className="navbar bg-base-100 shadow-lg px-8 md:px-4 fixed z-10 container mx-auto">
@@ -39,14 +48,20 @@ const NavBar = () => {
             </NavLink>
           </li>
           <li>
-            <NavLink
-              to="/login"
-              className={({ isActive }) =>
-                isActive ? "text-primary border border-secondary" : "font-bold"
-              }
-            >
-              Login
-            </NavLink>
+            {user ? (
+              <span>{user?.email}</span>
+            ) : (
+              <NavLink
+                to="/login"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-primary border border-secondary"
+                    : "font-bold"
+                }
+              >
+                Login
+              </NavLink>
+            )}
           </li>
           <li>
             <NavLink
@@ -67,6 +82,23 @@ const NavBar = () => {
             >
               Register
             </NavLink>
+          </li>
+          <li>
+            {user?.email
+              ? <span>{user.email}</span> && (
+                  <NavLink
+                    to="/login"
+                    onClick={handleLogOut}
+                    className={({ isActive }) =>
+                      isActive
+                        ? "text-primary border border-secondary"
+                        : "font-bold"
+                    }
+                  >
+                    Sign Out
+                  </NavLink>
+                )
+              : ""}
           </li>
         </ul>
 
